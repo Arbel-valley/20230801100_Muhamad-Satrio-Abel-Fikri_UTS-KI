@@ -133,3 +133,44 @@ class EncryptionHelper
         }
     }
 }
+
+//EncryptPaymentData
+<?php
+
+namespace App\Services;
+
+use App\Helpers\EncryptionHelper;
+use App\Models\Payment;
+
+class EncryptPaymentData
+{
+    /**
+     * Encrypt sensitive fields in a Payment record.
+     */
+    public static function encryptPayment(Payment $payment): array
+    {
+        return [
+            'user_id'        => $payment->user_id,
+            'amount'         => EncryptionHelper::encrypt($payment->amount),
+            'payment_method' => EncryptionHelper::encrypt($payment->payment_method),
+            'status'         => $payment->status,
+            'paid_at'        => $payment->paid_at,
+            'created_at'     => $payment->created_at,
+        ];
+    }
+
+    /**
+     * Decrypt sensitive fields in an encrypted Payment array.
+     */
+    public static function decryptPayment(array $encryptedData): array
+    {
+        return [
+            'user_id'        => $encryptedData['user_id'],
+            'amount'         => EncryptionHelper::decrypt($encryptedData['amount']),
+            'payment_method' => EncryptionHelper::decrypt($encryptedData['payment_method']),
+            'status'         => $encryptedData['status'],
+            'paid_at'        => $encryptedData['paid_at'],
+            'created_at'     => $encryptedData['created_at'],
+        ];
+    }
+}
